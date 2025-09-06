@@ -47,7 +47,7 @@ async function getSongs(folder) {
     Array.from(document.querySelectorAll(".songList li")).forEach(e => {
         e.addEventListener("click", () => {
             let track = e.querySelector(".info").firstElementChild.innerHTML;
-            playMusic(track);
+            playMusic(`${currfolder}/${track}`);
         });
     });
 
