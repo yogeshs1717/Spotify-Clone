@@ -22,19 +22,9 @@ function secondsToMinutesSeconds(seconds) {
 // Fetch songs from a folder
 async function getSongs(folder) {
     currfolder = folder;
-    let a = await fetch(`${folder}/`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let as = div.getElementsByTagName("a");
-    songs = [];
-
-    for (let index = 0; index < as.length; index++) {
-        const element = as[index];
-        if (element.href.endsWith(".mp3")) {
-            songs.push(element.href.split(`/${folder}/`)[1]);
-        }
-    }
+    let a = await fetch(`${folder}/info.json`);
+    let response = await a.json();
+    songs = response.tracks;
 
     let songUL = document.querySelector(".songList ul");
     songUL.innerHTML = "";
@@ -43,7 +33,7 @@ async function getSongs(folder) {
         <li>
             <img class="invert" src="img/music.svg" alt="">
             <div class="info">
-                <div>${song.replace(/%20/g, " ")}</div>
+                <div>${song}</div>
                 <div>prince</div>
             </div>
             <div class="playnow">
@@ -63,6 +53,7 @@ async function getSongs(folder) {
 
     return songs;
 }
+
 
 // Play a specific track
 const playMusic = (track, pause = false) => {
