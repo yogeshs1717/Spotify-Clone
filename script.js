@@ -68,21 +68,15 @@ const playMusic = (track, pause = false) => {
 
 // Display album cards
 async function displayAlbums() {
-    let a = await fetch(`songs/`);
-    let response = await a.text();
-    let div = document.createElement("div");
-    div.innerHTML = response;
-    let anchors = div.getElementsByTagName("a");
+    let res = await fetch("songs/albums.json");
+    let data = await res.json();
     let cardContainer = document.querySelector(".cardContainer");
 
-    for (let index = 0; index < anchors.length; index++) {
-        const e = anchors[index];
-        if (e.href.includes("/songs")) {
-            let folder = e.href.split("/").slice(-2)[0];
-            let res = await fetch(`songs/${folder}/info.json`);
-            let info = await res.json();
+    for (let folder of data.albums) {
+        let infoRes = await fetch(`songs/${folder}/info.json`);
+        let info = await infoRes.json();
 
-            cardContainer.innerHTML += `
+        cardContainer.innerHTML += `
             <div data-folder="${folder}" class="card">
                 <div class="play">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="44" height="44" fill="none">
@@ -90,11 +84,10 @@ async function displayAlbums() {
                         <path d="M9.5 11.1998V12.8002C9.5 14.3195 9.5 15.0791 9.95576 15.3862C10.4115 15.6932 11.0348 15.3535 12.2815 14.6741L13.7497 13.8738C15.2499 13.0562 16 12.6474 16 12C16 11.3526 15.2499 10.9438 13.7497 10.1262L12.2815 9.32594C11.0348 8.6465 10.4115 8.30678 9.95576 8.61382C9.5 8.92086 9.5 9.6805 9.5 11.1998Z" fill="black"/>
                     </svg>
                 </div>
-                <img src="/songs/${folder}/cover.jpg" alt="">
+                <img src="songs/${folder}/cover.jpg" alt="">
                 <h2>${info.title}</h2>
                 <p>${info.description}</p>
             </div>`;
-        }
     }
 
     // Attach click to cards
